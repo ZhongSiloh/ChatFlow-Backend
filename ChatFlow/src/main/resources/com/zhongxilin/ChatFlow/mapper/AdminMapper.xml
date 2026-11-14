@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhongxilin.ChatFlow.mapper.AdminMapper">
+
+<!-- 根据用户名关键字查询用户列表；关键字为空时查询全部用户 -->
+    <select id="selectUsersByUsername" resultType="com.zhongxilin.ChatFlow.pojo.User">
+
+        select id,username,avatar,deleted from cf_user
+        where 1=1
+        <if test="username !=null and username !=''">
+            and username like concat('%', #{username}, '%')
+        </if>
+
+    </select>
+
+<!--    // 根据群名关键字查询群列表；关键字为空时查询全部群-->
+    <select id="selectGroupsByGroupName" resultType="com.zhongxilin.ChatFlow.pojo.Group">
+
+        select id,group_name,avatar,description,status from cf_group
+        where 1=1
+        <if test="groupName !=null and groupName !=''">
+            and group_name like concat('%', #{groupName}, '%')
+        </if>
+    </select>
+
+
+</mapper>

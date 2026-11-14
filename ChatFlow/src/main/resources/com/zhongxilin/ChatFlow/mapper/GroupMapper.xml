@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhongxilin.ChatFlow.mapper.GroupMapper">
+
+    <select id="selectGroupsByIdAndName" resultType="com.zhongxilin.ChatFlow.pojo.Group">
+
+        SELECT g.id, g.group_code, g.group_name, g.avatar, g.description, g.owner_id, g.join_mode, g.status
+        FROM cf_group g
+
+        <where>
+            (
+            g.owner_id = #{userId}
+
+            OR EXISTS (
+            SELECT 1
+            FROM cf_group_member gm
+            WHERE gm.group_id = g.id
+            AND gm.user_id = #{userId}
+            )
+            )
+
+            <if test="groupName != null and groupName != ''">
+                AND g.group_name LIKE CONCAT('%', #{groupName}, '%')
+            </if>
+
+        </where>
+
+        ORDER BY g.created_at DESC
+
+    </select>
+
+    <select id="selectGroupMembers" resultType="com.zhongxilin.ChatFlow.pojo.GroupMember">
+        SELECT gm.id, gm.group_id, gm.user_id, u.username, u.avatar, gm.role,
+               gm.group_nick, gm.join_time, gm.leave_time, gm.leave_type, gm.status
+        FROM cf_group_member gm
+        JOIN cf_user u ON u.id = gm.user_id
+        WHERE gm.group_id = #{groupId}
+          AND gm.status = 1
+        <if test="username != null and username != ''">
+            AND u.username LIKE CONCAT('%', #{username}, '%')
+        </if>
+        ORDER BY gm.role DESC, gm.join_time ASC, gm.id ASC
+    </select>
+
+</mapper>

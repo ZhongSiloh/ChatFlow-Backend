@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhongxilin.ChatFlow.mapper.FriendMapper">
+
+    <select id="selectFriendsByIdAndFriendName" resultType="com.zhongxilin.ChatFlow.pojo.User">
+        select u.id, u.username, u.avatar, f.status
+        from cf_friendship f
+        join cf_user u on u.id = f.friend_id
+        where f.user_id = #{id}
+        <if test="username != null and username != ''">
+            and u.username like concat('%', #{username}, '%')
+        </if>
+    </select>
+
+</mapper>
