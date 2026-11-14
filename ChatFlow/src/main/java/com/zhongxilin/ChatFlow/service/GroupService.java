@@ -24,4 +24,10 @@ public interface GroupService {
     void rejectGroupRequest(Integer groupId, Integer userId);
 
     List<GroupMember> getGroupMembersList(Integer groupId, String username);
+
+    void removeGroupMember(Integer groupId, Integer userId);
+
+    void quitGroup(Integer groupId, Integer userId);
+
+    void disbandGroup(Integer groupId);
 }

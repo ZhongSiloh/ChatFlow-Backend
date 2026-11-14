@@ -97,4 +97,29 @@ public interface GroupMapper {
     // 查询群内有效成员，可按用户名模糊查询
     List<GroupMember> selectGroupMembers(@Param("groupId") Integer groupId,
                                          @Param("username") String username);
+
+    // 群主移除普通成员
+    @Update("UPDATE cf_group_member SET status = 0, leave_time = NOW(), leave_type = 2 " +
+            "WHERE group_id = #{groupId} AND user_id = #{userId} AND status = 1 AND role = 0 " +
+            "AND EXISTS (SELECT 1 FROM cf_group g WHERE g.id = #{groupId} " +
+            "AND g.owner_id = #{ownerId} AND g.status = 1)")
+    int removeGroupMember(@Param("groupId") Integer groupId,
+                          @Param("userId") Integer userId,
+                          @Param("ownerId") Integer ownerId);
+
+    // 普通成员主动退出群
+    @Update("UPDATE cf_group_member SET status = 0, leave_time = NOW(), leave_type = 1 " +
+            "WHERE group_id = #{groupId} AND user_id = #{userId} AND status = 1 AND role = 0 " +
+            "AND EXISTS (SELECT 1 FROM cf_group g WHERE g.id = #{groupId} AND g.status = 1)")
+    int quitGroup(@Param("groupId") Integer groupId, @Param("userId") Integer userId);
+
+    // 群主解散群
+    @Update("UPDATE cf_group SET status = 0, dissolved_at = NOW() " +
+            "WHERE id = #{groupId} AND owner_id = #{ownerId} AND status = 1")
+    int disbandGroup(@Param("groupId") Integer groupId, @Param("ownerId") Integer ownerId);
+
+    // 将解散群组的所有有效成员标记为离开
+    @Update("UPDATE cf_group_member SET status = 0, leave_time = NOW(), leave_type = 3 " +
+            "WHERE group_id = #{groupId} AND status = 1")
+    int markGroupMembersDisbanded(@Param("groupId") Integer groupId);
 }

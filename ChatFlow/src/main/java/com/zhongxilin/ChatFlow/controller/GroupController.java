@@ -97,6 +97,26 @@ public class GroupController {
         return Result.success(members);
     }
 
+    //群主踢出成员（前端判断是否为群主提供接口）
+    @DeleteMapping("/group-members/remove/{groupId}/{userId}")
+    public Result removeGroupMember(@PathVariable("groupId") Integer groupId, @PathVariable("userId") Integer userId){
+        groupService.removeGroupMember(groupId, userId);
+        return Result.success("已移除群成员");
+    }
+
+    //当前成员(userId)主动退群（若当前成员role=1为群主时则不能退群）
+    @DeleteMapping("/group-members/quit/{groupId}/{userId}")
+    public Result quitGroup(@PathVariable("groupId") Integer groupId, @PathVariable("userId") Integer userId){
+        groupService.quitGroup(groupId, userId);
+        return Result.success("已退出群聊");
+    }
+
+    //群主解散群（前端判断是否为群主提供接口）
+    @DeleteMapping("/group-members/disband/{groupId}")
+    public Result disbandGroup(@PathVariable("groupId") Integer groupId){
+        groupService.disbandGroup(groupId);
+        return Result.success("群聊已解散");
+    }
 
 
 

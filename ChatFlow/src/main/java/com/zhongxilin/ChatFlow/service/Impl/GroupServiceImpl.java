@@ -3,6 +3,7 @@ package com.zhongxilin.ChatFlow.service.Impl;
 import com.zhongxilin.ChatFlow.mapper.GroupMapper;
 import com.zhongxilin.ChatFlow.pojo.*;
 import com.zhongxilin.ChatFlow.service.GroupService;
+import com.zhongxilin.ChatFlow.utils.CurrentHolder;
 import com.zhongxilin.ChatFlow.utils.UserCodeGenerate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -153,6 +154,67 @@ public class GroupServiceImpl implements GroupService {
     public List<GroupMember> getGroupMembersList(Integer groupId, String username) {
 
         return groupMapper.selectGroupMembers(groupId, username);
+    }
+
+    @Override
+    @Transactional
+    public void removeGroupMember(Integer groupId, Integer userId) {
+        validateGroupId(groupId);
+        validateCurrentUserId();
+        if (userId == null || userId <= 0) {
+            throw new IllegalArgumentException("成员用户ID无效");
+        }
+
+        int affectedRows = groupMapper.removeGroupMember(groupId, userId, CurrentHolder.getCurrentId());
+        if (affectedRows != 1) {
+            throw new IllegalArgumentException("群组不存在、无权操作或目标用户不是普通成员");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void quitGroup(Integer groupId, Integer userId) {
+        validateGroupId(groupId);
+        if (userId == null || userId <= 0) {
+            throw new IllegalArgumentException("用户ID无效");
+        }
+
+        int currentUserId = validateCurrentUserId();
+        if (currentUserId != userId) {
+            throw new IllegalArgumentException("只能退出自己的群成员身份");
+        }
+
+        int affectedRows = groupMapper.quitGroup(groupId, userId);
+        if (affectedRows != 1) {
+            throw new IllegalArgumentException("群组不存在、用户不是有效成员或群主不能主动退群");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void disbandGroup(Integer groupId) {
+        validateGroupId(groupId);
+        int ownerId = validateCurrentUserId();
+
+        int affectedRows = groupMapper.disbandGroup(groupId, ownerId);
+        if (affectedRows != 1) {
+            throw new IllegalArgumentException("群组不存在、群已解散或当前用户不是群主");
+        }
+        groupMapper.markGroupMembersDisbanded(groupId);
+    }
+
+    private void validateGroupId(Integer groupId) {
+        if (groupId == null || groupId <= 0) {
+            throw new IllegalArgumentException("群组ID无效");
+        }
+    }
+
+    private int validateCurrentUserId() {
+        Integer userId = CurrentHolder.getCurrentId();
+        if (userId == null || userId <= 0) {
+            throw new IllegalStateException("无法识别当前登录用户");
+        }
+        return userId;
     }
 
     private void validateGroupRequestIds(Integer groupId, Integer userId) {
