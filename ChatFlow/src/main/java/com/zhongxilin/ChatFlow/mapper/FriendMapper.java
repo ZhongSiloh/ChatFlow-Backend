@@ -30,11 +30,13 @@ public interface FriendMapper {
     void insertFriendRequest(FriendRequestData friendRequestData);
 
     // 根据申请人ID查询其发出的所有好友请求
-    @Select("select from_user_id,to_user_id,status,created_at,handled_at from cf_friend_request where from_user_id=#{fromUserId}")
+    @Select("select r.from_user_id,r.to_user_id,u.username,u.avatar,r.status,r.created_at,r.handled_at " +
+            "from cf_friend_request r join cf_user u on u.id=r.to_user_id where r.from_user_id=#{fromUserId}")
     List<FriendReqestFeedback> selectSentRequestsByUserId(Integer fromUserId);
 
     // 根据接收人ID查询其收到的所有好友请求
-    @Select("select from_user_id,to_user_id,status,created_at,handled_at from cf_friend_request where to_user_id=#{toUserId}")
+    @Select("select r.from_user_id,r.to_user_id,u.username,u.avatar,r.status,r.created_at,r.handled_at " +
+            "from cf_friend_request r join cf_user u on u.id=r.from_user_id where r.to_user_id=#{toUserId}")
     List<FriendReqestFeedback> selectReceivedRequestsByUserId(Integer toUserId);
 
     // 将指定好友请求的状态更新为已接受（1）

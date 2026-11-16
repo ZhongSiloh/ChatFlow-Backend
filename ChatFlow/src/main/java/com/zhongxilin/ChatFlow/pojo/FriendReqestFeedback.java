@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 public class FriendReqestFeedback {
     private String fromUserId;
     private String toUserId;
+    private String username;
+    private String avatar;
     private Integer status;
     private LocalDateTime createdAt;
     private LocalDateTime handledAt;
