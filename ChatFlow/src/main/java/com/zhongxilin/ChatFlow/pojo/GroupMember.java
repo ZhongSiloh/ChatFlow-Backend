@@ -19,6 +19,7 @@ public class GroupMember {
     private Long userId;
     private String username;
     private String avatar;
+    private String ownerId;//所在群的群主id
     /** 成员角色：0 普通成员，1 群主 */
     private Integer role;
     /** 群昵称 */

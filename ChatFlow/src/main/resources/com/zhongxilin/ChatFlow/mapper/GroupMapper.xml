@@ -33,10 +33,11 @@
     </select>
 
     <select id="selectGroupMembers" resultType="com.zhongxilin.ChatFlow.pojo.GroupMember">
-        SELECT gm.id, gm.group_id, gm.user_id, u.username, u.avatar, gm.role,
+        SELECT gm.id,g.owner_id, gm.group_id, gm.user_id, u.username, u.avatar, gm.role,
                gm.group_nick, gm.join_time, gm.leave_time, gm.leave_type, gm.status
         FROM cf_group_member gm
         JOIN cf_user u ON u.id = gm.user_id
+        LEFT JOIN cf_group g ON g.id = gm.group_id
         WHERE gm.group_id = #{groupId}
           AND gm.status = 1
         <if test="username != null and username != ''">

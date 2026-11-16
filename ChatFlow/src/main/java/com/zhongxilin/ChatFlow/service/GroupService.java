@@ -11,7 +11,7 @@ public interface GroupService {
 
     void editGroupProfile(Integer groupId, Group group);
 
-    Group getGroupProfile(Integer groupId);
+
 
     GroupJoinResult joinGroup(GroupRequestData groupRequestData);
 

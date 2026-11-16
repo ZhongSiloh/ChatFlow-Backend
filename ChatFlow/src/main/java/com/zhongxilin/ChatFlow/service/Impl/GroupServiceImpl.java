@@ -47,11 +47,6 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group getGroupProfile(Integer groupId) {
-        return groupMapper.selectGroupProfile(groupId);
-    }
-
-    @Override
     public GroupJoinResult joinGroup(GroupRequestData groupRequestData) {
         if (groupRequestData == null || groupRequestData.getGroupCode() == null
                 || groupRequestData.getGroupCode().isBlank()
