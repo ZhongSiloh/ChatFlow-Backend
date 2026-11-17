@@ -32,7 +32,7 @@ public class GroupController {
     //查询群主页资料/查询回显群主页，返回的ownerId用于前端判断当前用户是否为群主，若是则渲染编辑按钮
 //    接口实现在UserController
 
-    //（群主，前端判断当前用户是否为群主）修改群主页资料（avatar、description、join_mode）
+    //（群主，前端判断当前用户是否为群主）修改群主页资料（groupName，avatar、description、join_mode）
     @PostMapping("/group/{groupId}")
     public Result editGroupProfile(@PathVariable("groupId") Integer groupId, @RequestBody Group group){
         groupService.editGroupProfile(groupId, group);

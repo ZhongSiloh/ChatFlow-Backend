@@ -37,7 +37,7 @@ public interface GroupMapper {
     int countActiveGroupMember(@Param("groupId") Integer groupId, @Param("userId") Long userId);
 
     // 更新群主页资料
-    @Update("UPDATE cf_group SET avatar = #{group.avatar}, description = #{group.description}, join_mode = #{group.joinMode} WHERE id = #{groupId}")
+    @Update("UPDATE cf_group SET group_name=#{group.groupName}, avatar = #{group.avatar}, description = #{group.description}, join_mode = #{group.joinMode} WHERE id = #{groupId}")
     void updateGroupProfile(@Param("groupId") Integer groupId, @Param("group") Group group);
 
     // 根据群组ID查询群主页资料
