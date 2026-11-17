@@ -12,3 +12,9 @@ mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
+
+deepseek:
+  api-key: sk-9bb3c02d918d44f68d99608d8a1eb978
+  base-url: https://api.deepseek.com
+  model: deepseek-chat
+  timeout-seconds: 120      # 与 DeepSeek API 通信的超时时间，单位为秒。

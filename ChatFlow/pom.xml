@@ -93,6 +93,17 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+<!--自动装配完整的参数校验能力-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+<!--		reactor-core:Spring中实现响应式编程-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
 
 
 	</dependencies>
