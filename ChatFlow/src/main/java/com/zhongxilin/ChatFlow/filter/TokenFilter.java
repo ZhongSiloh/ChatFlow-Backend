@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-// SseEmitter 需要 Servlet 异步处理；过滤器必须显式声明支持异步派发。
+//AI SSE 请求使用 SseEmitter，所以过滤器需要声明 Servlet 异步支持；过滤器必须显式声明支持异步派发。
 @WebFilter(urlPatterns = "/*", asyncSupported = true)
 public class TokenFilter implements Filter {
 
