@@ -64,11 +64,15 @@ public class AiChatController {
                 emitter.send(SseEmitter.event().name("done").data("[DONE]"));
                 emitter.complete();
             } catch (Exception e) {
+                // 记录真实异常，便于区分 DeepSeek、数据库及客户端连接问题。
+                org.slf4j.LoggerFactory.getLogger(AiChatController.class)
+                        .error("AI 流式回复失败，sessionId={}", id, e);
                 try {
                     emitter.send(SseEmitter.event().name("error")
                             .data("AI 回复失败，请稍后重试"));
                 } catch (IOException ignored) {}
-                emitter.completeWithError(e);
+                // 错误已通过 SSE 事件通知前端；正常关闭 emitter，避免再进入全局 JSON 异常处理器。
+                emitter.complete();
             }
         });
 

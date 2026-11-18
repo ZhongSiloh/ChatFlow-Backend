@@ -2,7 +2,9 @@ package com.zhongxilin.ChatFlow.ai.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // 注解包名不变，仅示例
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -45,12 +47,12 @@ public class DeepSeekClient {
                 .header("Authorization", "Bearer " + apiKey)
                 .bodyValue(body)
                 .retrieve()
-                .bodyToFlux(String.class)
-                .flatMapIterable(chunk -> List.of(chunk.split("\\n")))
-                .filter(line -> line.startsWith("data:"))
-                .map(line -> line.substring(5).trim())
+                // 使用 Spring 的 SSE 解码器按事件解析，避免把 TCP 网络分块误当作完整事件。
+                .bodyToFlux(new ParameterizedTypeReference<ServerSentEvent<String>>() {})
+                .map(ServerSentEvent::data)
+                .filter(data -> data != null && !data.isBlank())
                 .takeUntil("[DONE]"::equals)
-                .filter(data -> !data.equals("[DONE]"))
+                .filter(data -> !"[DONE]".equals(data))
                 .map(this::extractContent)
                 .filter(content -> !content.isEmpty());
     }

@@ -10,7 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = "/*")
+// SseEmitter 需要 Servlet 异步处理；过滤器必须显式声明支持异步派发。
+@WebFilter(urlPatterns = "/*", asyncSupported = true)
 public class TokenFilter implements Filter {
 
     @Override
@@ -45,11 +46,13 @@ public class TokenFilter implements Filter {
             response.setStatus(401);
             return;
         }
-        //合法则放行
-        filterChain.doFilter(request,response);
-
-        //删除ThreadLocal中的数据
-        CurrentHolder.remove();
+        // 合法则放行。无论同步请求还是异步请求，均确保清理当前工作线程的登录上下文。
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            // Servlet 异步任务可能切换线程；原请求线程仍需清理 ThreadLocal。
+            CurrentHolder.remove();
+        }
 
 
     }
