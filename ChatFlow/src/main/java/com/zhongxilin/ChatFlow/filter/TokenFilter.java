@@ -24,7 +24,8 @@ public class TokenFilter implements Filter {
 //        获取请求路径
         String requestURI = request.getRequestURI();
 //        判断是否是登录请求
-        if (requestURI.contains("/login") || requestURI.contains("/auth/register")) {
+        if (requestURI.contains("/login") || requestURI.contains("/auth/register")
+                || requestURI.contains("/gs-guide-websocket")) {
 
             filterChain.doFilter(request, response);
             return;
