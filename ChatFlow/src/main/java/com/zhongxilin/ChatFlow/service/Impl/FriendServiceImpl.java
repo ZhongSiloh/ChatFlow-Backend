@@ -29,9 +29,12 @@ public class FriendServiceImpl implements FriendService {
             if (status != null) {
                 int statusValue = ((Number) status).intValue();// 将status转换为int类型
 
-                if (statusValue == 0 || statusValue == 1) { // 如果状态为0（待处理）或1（已接受），则不允许重复发送请求
-
-                    return existingRequest;
+                if (statusValue == 0) return existingRequest;
+                if (statusValue == 1) {
+                    // 已同意的记录仅在好友关系仍有效时阻止再次申请。
+                    if (friendMapper.hasActiveFriendship(friendRequestData.getFromUserId(), friendRequestData.getToUserCode()) > 0) return existingRequest;
+                    friendMapper.resetAcceptedFriendRequest(friendRequestData.getFromUserId(), friendRequestData.getToUserCode());
+                    return null;
                 }
                 // 如果状态为2（已拒绝），则允许重新发送请求
                 if (statusValue == 2) {
@@ -84,5 +87,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public void deleteFriend(Integer userId, Integer friendId) {
         friendMapper.deleteFriendBy2Id(userId, friendId);
+        friendMapper.deleteFriendBy2Id(friendId, userId);
+        friendMapper.markFriendRequestsAsRejected(userId, friendId);
     }
 }

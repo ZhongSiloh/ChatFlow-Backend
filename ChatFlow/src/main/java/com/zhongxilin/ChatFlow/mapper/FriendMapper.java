@@ -24,6 +24,18 @@ public interface FriendMapper {
     void updateFriednRequest(@Param("fromUserId") String fromUserId,
                              @Param("toUserCode") String toUserCode);
 
+    @Select("select count(*) from cf_friendship f join cf_user u on u.id=f.friend_id " +
+            "where f.user_id=#{fromUserId} and f.friend_id=(select id from cf_user where user_code=#{toUserCode}) and f.status=1")
+    int hasActiveFriendship(@Param("fromUserId") String fromUserId, @Param("toUserCode") String toUserCode);
+
+    @Update("update cf_friend_request set status=0, handled_at=null " +
+            "where from_user_id=#{fromUserId} and to_user_id=(select id from cf_user where user_code=#{toUserCode}) and status=1")
+    void resetAcceptedFriendRequest(@Param("fromUserId") String fromUserId, @Param("toUserCode") String toUserCode);
+
+    @Update("update cf_friend_request set status=2 where (from_user_id=#{userId} and to_user_id=#{friendId}) " +
+            "or (from_user_id=#{friendId} and to_user_id=#{userId})")
+    void markFriendRequestsAsRejected(@Param("userId") Integer userId, @Param("friendId") Integer friendId);
+
     // 向好友请求表插入一条状态为待处理（0）的好友请求
     @Insert("insert into cf_friend_request(from_user_id, to_user_id, status)" +
             "values (#{fromUserId}, (select id from cf_user where user_code = #{toUserCode}), 0)")
