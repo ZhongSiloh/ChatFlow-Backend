@@ -11,6 +11,10 @@ import java.util.Map;
 @Mapper
 public interface FriendMapper {
 
+    /** 查询 userId -> friendId 方向是否存在有效好友关系；双向私聊需要调用者检查两个方向。 */
+    @Select("SELECT COUNT(*) FROM cf_friendship WHERE user_id=#{userId} AND friend_id=#{friendId} AND status=1")
+    int countActiveFriendshipByIds(@Param("userId") long userId, @Param("friendId") long friendId);
+
     // 根据申请人ID和接收方用户编码查询对应的好友请求
     @Select("select from_user_id,to_user_id,status from cf_friend_request " +
             "where from_user_id=#{fromUserId} and to_user_id=(select id from cf_user where user_code=#{toUserCode})")

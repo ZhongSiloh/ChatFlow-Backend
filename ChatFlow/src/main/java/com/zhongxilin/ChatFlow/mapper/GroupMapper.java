@@ -15,6 +15,14 @@ import java.util.Map;
 @Mapper
 public interface GroupMapper {
 
+    /** 查询用户是否仍在指定群组中，用于发送、订阅和读取历史前的权限校验。 */
+    @Select("SELECT COUNT(*) FROM cf_group_member WHERE group_id=#{groupId} AND user_id=#{userId} AND status=1")
+    int countActiveMemberByIds(@Param("groupId") long groupId, @Param("userId") long userId);
+
+    /** 读取指定群的所有有效成员 ID，供群消息投递等场景使用。 */
+    @Select("SELECT user_id FROM cf_group_member WHERE group_id=#{groupId} AND status=1")
+    List<Long> selectActiveMemberIds(@Param("groupId") long groupId);
+
     // 根据用户ID和可选群组名关键字查询群组列表
     List<Group> selectGroupsByIdAndName(Integer userId, String groupName);
 
