@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class PublicChatRoomMessage {
     private String content;
     private Long userId;
+    private String senderName;
+    private String avatar;
 }

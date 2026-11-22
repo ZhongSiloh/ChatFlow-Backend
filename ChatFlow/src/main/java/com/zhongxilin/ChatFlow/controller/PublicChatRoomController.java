@@ -16,7 +16,9 @@ public class PublicChatRoomController {
         Thread.sleep(500); // simulated delay
         return new PublicChatRoomMessage(
                 HtmlUtils.htmlEscape(message.getName()),
-                message.getUserId()
+                message.getUserId(),
+                HtmlUtils.htmlEscape(message.getSenderName()),
+                message.getAvatar()
         );
     }
 
