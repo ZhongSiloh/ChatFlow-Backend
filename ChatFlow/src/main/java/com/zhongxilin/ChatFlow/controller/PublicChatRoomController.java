@@ -14,7 +14,10 @@ public class PublicChatRoomController {
     @SendTo("/topic/greetings")
     public PublicChatRoomMessage greeting(HelloMessage message) throws Exception {
         Thread.sleep(500); // simulated delay
-        return new PublicChatRoomMessage(HtmlUtils.htmlEscape(message.getName()));
+        return new PublicChatRoomMessage(
+                HtmlUtils.htmlEscape(message.getName()),
+                message.getUserId()
+        );
     }
 
 }
