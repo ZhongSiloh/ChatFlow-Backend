@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+//客户端发送聊天消息时使用的请求 DTO
 public class SendChatMessage {
     /** 好友私聊的接收方用户 ID；群聊请求中为空。 */
     private Long friendId;

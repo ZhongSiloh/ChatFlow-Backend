@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongxilin.ChatFlow.mapper.MessageRecordMapper">
+    <select id="selectPrivateMessages" resultType="com.zhongxilin.ChatFlow.pojo.ChatMessageRecord">
+        select id, conversation_type, conversation_id, sender_id, recipient_id, content, created_at
+        from cf_chat_message
+        where conversation_type = #{conversationType}
+          and conversation_id = #{conversationId}
+        <if test="senderId != null">
+          and ((sender_id = #{senderId} and recipient_id = #{recipientId})
+            or (sender_id = #{recipientId} and recipient_id = #{senderId}))
+        </if>
+        <if test="senderId == null">
+          and (sender_id = #{recipientId} or recipient_id = #{recipientId})
+        </if>
+        order by id asc
+    </select>
+</mapper>

@@ -17,12 +17,19 @@ public class ChatStompController {
         this.chatService = chatService;
     }
 
+//    将发往 /app/chat.private.send 的 STOMP 消息路由到下一个方法；/app 来自 WebSocket 配置
+    /**
+     *
+     * @param request 客户端发送的 JSON 正文，Spring 会将它转换成 SendChatMessage 对象
+     * @param principal 当前 WebSocket 会话的认证身份，由 ChatAuthChannelInterceptor 在 STOMP 的 CONNECT 帧中创建
+     */
     @MessageMapping("/chat.private.send")
     /** 处理好友私聊发送帧；发送者身份从认证 Principal 读取，不信任客户端字段。 */
     public void sendPrivate(SendChatMessage request, Principal principal) {
         chatService.sendPrivate(userId(principal), request);
     }
 
+//    将 /app/chat.group.send 映射到群聊发送方法
     @MessageMapping("/chat.group.send")
     /** 处理群聊发送帧；服务层会校验发送者的有效群成员身份。 */
     public void sendGroup(SendChatMessage request, Principal principal) {
